@@ -1,5 +1,7 @@
 # Ansible Role: Common Packages
 
+[![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml)
+
 An Ansible Role that installs common packages.
 
 ## Requirements
