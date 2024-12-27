@@ -1,0 +1,28 @@
+---
+- name: Install common utilities for Archlinux
+  block:
+    - name: Install common pacman packages
+      block:
+        - name: Combine default common_pkgs with host-specific common_pkgs
+          set_fact:
+            common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
+
+        - name: Update package database
+          community.general.pacman:
+            update_cache: true
+          become: true
+
+        - name: Install and update common pacman packages
+          ansible.builtin.package:
+            name: "{{ package }}"
+            state: latest
+          loop: "{{ common_pkgs }}"
+          loop_control:
+            loop_var: package
+          become: true
+
+  # - name: Install common pip packages
+
+  # - name: Install common git repos
+
+  # - name: Install common golang tools

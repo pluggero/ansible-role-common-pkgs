@@ -1,0 +1,53 @@
+---
+- name: Install common utilities for Debian
+  block:
+    - name: Install common apt packages
+      block:
+        - name: Combine default common_pkgs with host-specific common_pkgs
+          set_fact:
+            common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
+
+        - name: Install and update common apt packages
+          ansible.builtin.apt:
+            update_cache: true
+            install_recommends: yes
+            name: "{{ package }}"
+            state: latest
+          loop: "{{ common_pkgs }}"
+          loop_control:
+            loop_var: package
+          become: true
+
+        - name: Remove useless packages from cache
+          ansible.builtin.apt:
+            autoclean: true
+          become: true
+
+        - name: Remove package dependencies that are no longer required
+          ansible.builtin.apt:
+            autoremove: true
+          become: true
+
+    - name: Install common pip packages
+      block:
+        - name: Combine default common_pkgs_pip with host-specific common_pkgs_pip
+          set_fact:
+            common_pkgs_pip: "{{ common_pkgs_pip_role + common_pkgs_pip_host }}"
+
+        - name: Ensure pipx binary directory is in PATH
+          ansible.builtin.lineinfile:
+            path: "{{ ansible_env.HOME }}/.bashrc"
+            line: 'export PATH="$PATH:{{ ansible_env.HOME }}/.local/bin"'
+            create: true
+
+        - name: Install common pip packages via pipx
+          community.general.pipx:
+            name: "{{ package }}"
+            state: latest
+          loop: "{{ common_pkgs_pip }}"
+          loop_control:
+            loop_var: package
+
+  # - name: Install common git repos
+
+  # - name: Install common golang tools
