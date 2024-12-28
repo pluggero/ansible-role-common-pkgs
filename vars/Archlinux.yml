@@ -8,14 +8,13 @@ common_pkgs_role:
   - openbsd-netcat
   - bc
   - tinyxxd # Standalone in case you have not installed vim
-  - usbutils # For utilities like lsudb
-  - github-cli # For interacting with github from the command line (including copilot)
+  - usbutils # For utilities like lsusb
 
 # common pip packages to install
-common_pkgs_pip_role:
+common_pkgs_pip_role: []
 
 # common golang packages to install
-common_pkgs_go_role:
+common_pkgs_go_role: []
 
 # common git repos to install
-common_pkgs_git_repos_role:
+common_pkgs_git_repos_role: []

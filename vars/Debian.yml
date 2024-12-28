@@ -6,17 +6,12 @@ common_pkgs_dep_pkgs:
 common_pkgs_role:
   - python3-venv
   - bc
-  - hostapd # mobile access point
-  - python3-qrcode # mobile acces point
-  - adb
 
 # common pip packages to install
-common_pkgs_pip_role:
-  - frida-tools
-  - objection
+common_pkgs_pip_role: []
 
 # common golang packages to install
-common_pkgs_go_role:
+common_pkgs_go_role: []
 
 # common git repos to install
-common_pkgs_git_repos_role:
+common_pkgs_git_repos_role: []
