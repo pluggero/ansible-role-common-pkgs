@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         distro:
-          - debian
+          - debian12
           - archlinux
 
     steps:
