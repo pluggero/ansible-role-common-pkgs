@@ -13,8 +13,13 @@ None.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
 ```yaml
-
+common_pkgs_host: []
+common_pkgs_pip_host: []
+common_pkgs_go_host: []
+common_pkgs_git_repos_host: []
 ```
+
+In addition to the standardized packages that are defined for the respective distributions in `/vars`, host-specific packages can be defined with the variables shown above.
 
 ## Dependencies
 
