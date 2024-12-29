@@ -37,7 +37,7 @@ jobs:
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.12.2
         with:
-          requirements_file: "molecule/default/requirements.yml"
+          working-directory: "ansible-role-common-pkgs"
 
   molecule:
     name: Molecule
