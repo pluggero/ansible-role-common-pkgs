@@ -36,6 +36,8 @@ jobs:
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.12.2
+        with:
+          working_directory: "pluggero.common_pkgs"
 
   molecule:
     name: Molecule
