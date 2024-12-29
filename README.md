@@ -1,6 +1,6 @@
 # Ansible Role: Common Packages
 
-[![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml)
+[![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml) [![Ansible role downloads](https://img.shields.io/ansible/role/d/pluggero/common_pkgs)](https://galaxy.ansible.com/ui/standalone/roles/pluggero/common_pkgs)
 
 An Ansible Role that installs common packages.
 
@@ -30,7 +30,7 @@ None.
 ```yaml
 - hosts: all
   roles:
-    - pluggero.common-pkgs
+    - pluggero.common_pkgs
 ```
 
 ## License
