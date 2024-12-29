@@ -11,10 +11,6 @@ name: Release
     tags:
       - "*"
 
-defaults:
-  run:
-    working-directory: "ansible-role-common-pkgs"
-
 jobs:
   release:
     name: Release

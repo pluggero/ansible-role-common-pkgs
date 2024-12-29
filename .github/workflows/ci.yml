@@ -8,10 +8,6 @@ name: CI
   schedule:
     - cron: "0 7 * * 5"
 
-defaults:
-  run:
-    working-directory: "ansible-role-common-pkgs"
-
 jobs:
   lint:
     name: Lint
@@ -36,8 +32,6 @@ jobs:
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.12.2
-        with:
-          working_directory: "ansible-role-common-pkgs"
 
   molecule:
     name: Molecule
@@ -50,20 +44,20 @@ jobs:
           - archlinux
 
     steps:
-      - name: Check out the codebase.
+      - name: Check out the codebase
         uses: actions/checkout@v4
         with:
           path: "ansible-role-common-pkgs"
 
-      - name: Set up Python 3.
+      - name: Set up Python 3
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install test dependencies.
+      - name: Install test dependencies
         run: pip3 install ansible molecule molecule-plugins[docker] docker
 
-      - name: Run Molecule tests.
+      - name: Run Molecule tests
         run: molecule test
         env:
           PY_COLORS: "1"
