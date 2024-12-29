@@ -4,15 +4,15 @@
     - name: Install common apt packages
       block:
         - name: Combine default common_pkgs with host-specific common_pkgs
-          set_fact:
+          ansible.builtin.set_fact:
             common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
 
-        - name: Install and update common apt packages
+        - name: Install common apt packages
           ansible.builtin.apt:
             update_cache: true
-            install_recommends: yes
+            install_recommends: true
             name: "{{ package }}"
-            state: latest
+            state: present
           loop: "{{ common_pkgs }}"
           loop_control:
             loop_var: package
@@ -31,7 +31,7 @@
     - name: Install common pip packages
       block:
         - name: Combine default common_pkgs_pip with host-specific common_pkgs_pip
-          set_fact:
+          ansible.builtin.set_fact:
             common_pkgs_pip: "{{ common_pkgs_pip_role + common_pkgs_pip_host }}"
 
         - name: Ensure pipx binary directory is in PATH
@@ -39,15 +39,16 @@
             path: "{{ ansible_env.HOME }}/.bashrc"
             line: 'export PATH="$PATH:{{ ansible_env.HOME }}/.local/bin"'
             create: true
+            mode: "0644"
 
         - name: Install common pip packages via pipx
           community.general.pipx:
             name: "{{ package }}"
-            state: latest
+            state: present
           loop: "{{ common_pkgs_pip }}"
           loop_control:
             loop_var: package
 
-  # - name: Install common git repos
+    # - name: Install common git repos
 
-  # - name: Install common golang tools
+    # - name: Install common golang tools

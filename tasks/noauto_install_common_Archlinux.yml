@@ -4,7 +4,7 @@
     - name: Install common pacman packages
       block:
         - name: Combine default common_pkgs with host-specific common_pkgs
-          set_fact:
+          ansible.builtin.set_fact:
             common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
 
         - name: Update package database
@@ -12,17 +12,17 @@
             update_cache: true
           become: true
 
-        - name: Install and update common pacman packages
+        - name: Install common pacman packages
           ansible.builtin.package:
             name: "{{ package }}"
-            state: latest
+            state: present
           loop: "{{ common_pkgs }}"
           loop_control:
             loop_var: package
           become: true
 
-  # - name: Install common pip packages
+    # - name: Install common pip packages
 
-  # - name: Install common git repos
+    # - name: Install common git repos
 
-  # - name: Install common golang tools
+    # - name: Install common golang tools

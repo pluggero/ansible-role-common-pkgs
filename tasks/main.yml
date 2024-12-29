@@ -1,6 +1,6 @@
 ---
 - name: Add and run all plays
-  include_tasks: "{{ task_element }}"
+  ansible.builtin.include_tasks: "{{ task_element }}"
   with_items: "{{ lookup('ansible.builtin.fileglob', 'tasks/*.yml').split(',')
     | reject('search', 'main.yml')
     | reject('search', 'noauto_*')
