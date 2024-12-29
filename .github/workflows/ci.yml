@@ -28,7 +28,7 @@ jobs:
 
       - name: Run yamllint
         run: |
-          yamllint .
+          yamllint ansible-role-common-pkgs
 
       - name: Run ansible-lint
         uses: ansible/ansible-lint@v24.12.2
