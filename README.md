@@ -1,6 +1,6 @@
 # Ansible Role: Common Packages
 
-[![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml) [![Ansible role downloads](https://img.shields.io/ansible/role/d/pluggero/common_pkgs)](https://galaxy.ansible.com/ui/standalone/roles/pluggero/common_pkgs)
+[![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml) [![Ansible role downloads](https://img.shields.io/ansible/role/d/pluggero/common_pkgs?label=Ansible%20role%20downloads&color=%23096598)](https://galaxy.ansible.com/ui/standalone/roles/pluggero/common_pkgs)
 
 An Ansible Role that installs common packages.
 
