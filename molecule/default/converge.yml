@@ -13,4 +13,4 @@
       when: ansible_os_family == 'Debian'
 
   roles:
-    - role: ansible-role-common-pkgs
+    - role: pluggero/common_pkgs
