@@ -7,13 +7,13 @@
           ansible.builtin.set_fact:
             common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
 
-        - name: Update package database
+        - name: Update pacman cache
           community.general.pacman:
             update_cache: true
           become: true
 
         - name: Install common pacman packages
-          ansible.builtin.package:
+          community.general.pacman:
             name: "{{ package }}"
             state: present
           loop: "{{ common_pkgs }}"
