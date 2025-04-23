@@ -2,6 +2,9 @@
 - name: Converge
   hosts: all
 
+  vars_files:
+    - ../../vars/molecule.yml
+
   vars:
     ansible_user: root
 
