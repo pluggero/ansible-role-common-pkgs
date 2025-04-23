@@ -1,0 +1,26 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+
+  vars_files:
+    - ../../vars/molecule.yml
+
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Set package list depending on OS
+      ansible.builtin.set_fact:
+        pkg_list: "{{ common_pkgs_apt if ansible_os_family == 'Debian' else common_pkgs_pacman }}"
+
+    - name: Assert that test packages are installed
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.packages is defined
+          - package in ansible_facts.packages
+        fail_msg: "Package {{ package }} is NOT installed"
+      loop: "{{ pkg_list }}"
+      loop_control:
+        loop_var: package
