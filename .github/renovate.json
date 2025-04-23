@@ -1,4 +1,11 @@
 {
-  "extends": ["config:best-practices", ":disableRateLimiting"],
-  "enabledManagers": ["github-actions", "pip_requirements", "regex"]
+  "extends": [
+    "config:best-practices",
+    ":disableRateLimiting"
+  ],
+  "enabledManagers": [
+    "github-actions",
+    "pip_requirements",
+    "custom.regex"
+  ]
 }
