@@ -1,28 +1,18 @@
 ---
-- name: Install common utilities for Archlinux
+- name: Ensure we are using pacman
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use pacman as a package manager."
+  when: ansible_pkg_mgr != "pacman"
+
+- name: Install neovim via pacman
   block:
-    - name: Install common pacman packages
-      block:
-        - name: Combine default common_pkgs with host-specific common_pkgs
-          ansible.builtin.set_fact:
-            common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
+    - name: Update pacman cache
+      community.general.pacman:
+        update_cache: true
+      become: true
 
-        - name: Update pacman cache
-          community.general.pacman:
-            update_cache: true
-          become: true
-
-        - name: Install common pacman packages
-          community.general.pacman:
-            name: "{{ package }}"
-            state: present
-          loop: "{{ common_pkgs }}"
-          loop_control:
-            loop_var: package
-          become: true
-
-    # - name: Install common pip packages
-
-    # - name: Install common git repos
-
-    # - name: Install common golang tools
+    - name: Ensure common pacman packages are installed
+      community.general.pacman:
+        name: "{{ common_pkgs_pacman }}"
+        state: present
+      become: true

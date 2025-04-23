@@ -1,54 +1,19 @@
 ---
-- name: Install common utilities for Debian
+- name: Ensure we are using apt
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use apt as a package manager."
+  when: ansible_pkg_mgr != "apt"
+
+- name: Install neovim via apt
   block:
-    - name: Install common apt packages
-      block:
-        - name: Combine default common_pkgs with host-specific common_pkgs
-          ansible.builtin.set_fact:
-            common_pkgs: "{{ common_pkgs_role + common_pkgs_host }}"
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
 
-        - name: Install common apt packages
-          ansible.builtin.apt:
-            update_cache: true
-            install_recommends: true
-            name: "{{ package }}"
-            state: present
-          loop: "{{ common_pkgs }}"
-          loop_control:
-            loop_var: package
-          become: true
-
-        - name: Remove useless packages from cache
-          ansible.builtin.apt:
-            autoclean: true
-          become: true
-
-        - name: Remove package dependencies that are no longer required
-          ansible.builtin.apt:
-            autoremove: true
-          become: true
-
-    - name: Install common pip packages
-      block:
-        - name: Combine default common_pkgs_pip with host-specific common_pkgs_pip
-          ansible.builtin.set_fact:
-            common_pkgs_pip: "{{ common_pkgs_pip_role + common_pkgs_pip_host }}"
-
-        - name: Ensure pipx binary directory is in PATH
-          ansible.builtin.lineinfile:
-            path: "{{ ansible_env.HOME }}/.bashrc"
-            line: 'export PATH="$PATH:{{ ansible_env.HOME }}/.local/bin"'
-            create: true
-            mode: "0644"
-
-        - name: Install common pip packages via pipx
-          community.general.pipx:
-            name: "{{ package }}"
-            state: present
-          loop: "{{ common_pkgs_pip }}"
-          loop_control:
-            loop_var: package
-
-    # - name: Install common git repos
-
-    # - name: Install common golang tools
+    - name: Ensure common apt packages are installed
+      ansible.builtin.apt:
+        name: "{{ common_pkgs_apt }}"
+        state: present
+      become: true

@@ -1,6 +1,3 @@
 ---
-# This can be defined host-specifically
-common_pkgs_host: []
-common_pkgs_pip_host: []
-common_pkgs_go_host: []
-common_pkgs_git_repos_host: []
+common_pkgs_pacman: []
+common_pkgs_apt: []
