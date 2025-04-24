@@ -1,0 +1,15 @@
+---
+- name: Ensure we are using pacman
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use pacman as a package manager."
+  when: ansible_pkg_mgr != "pacman"
+
+- name: Remove common packages via pacman
+  block:
+    - name: Ensure common pacman packages and dependencies are removed
+      community.general.pacman:
+        name: "{{ common_pkgs.pacman.remove }}"
+        remove_nosave: "{{ common_pkgs.pacman.remove_modified_configs }}"
+        state: absent
+        extra_args: --recursive
+      become: true

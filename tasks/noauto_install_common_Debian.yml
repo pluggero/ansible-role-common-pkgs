@@ -4,7 +4,7 @@
     msg: "This role only supports {{ ansible_os_family }} systems that use apt as a package manager."
   when: ansible_pkg_mgr != "apt"
 
-- name: Install neovim via apt
+- name: Install common packages via apt
   block:
     - name: Update apt cache
       ansible.builtin.apt:
@@ -14,6 +14,6 @@
 
     - name: Ensure common apt packages are installed
       ansible.builtin.apt:
-        name: "{{ common_pkgs_apt }}"
+        name: "{{ common_pkgs.apt.install }}"
         state: present
       become: true

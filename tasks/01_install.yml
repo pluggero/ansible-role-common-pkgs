@@ -1,5 +1,5 @@
 ---
-- name: Install common utilities
+- name: Install common packages
   block:
     - name: Include OS-specific variables
       ansible.builtin.include_vars: "{{ var_file }}"
@@ -12,7 +12,7 @@
       loop_control:
         loop_var: var_file
 
-    - name: Include OS-specific common packages
+    - name: Include OS-specific common packages installation
       ansible.builtin.include_tasks: "{{ task_file }}"
       with_first_found:
         - "noauto_install_common_{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
