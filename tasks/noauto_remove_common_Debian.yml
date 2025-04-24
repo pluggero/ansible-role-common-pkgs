@@ -1,0 +1,25 @@
+---
+- name: Ensure we are using apt
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use apt as a package manager."
+  when: ansible_pkg_mgr != "apt"
+
+- name: Remove common packages via apt
+  block:
+    - name: Ensure common apt packages are installed
+      ansible.builtin.apt:
+        name: "{{ common_pkgs.apt.remove }}"
+        purge: "{{ common_pkgs.apt.remove_modified_configs }}"
+        state: absent
+      become: true
+
+    - name: Perform cleanup
+      block:
+        - name: Remove useless packages from the cache
+          ansible.builtin.apt:
+            autoclean: true
+
+        - name: Remove dependencies that are no longer required
+          ansible.builtin.apt:
+            autoremove: true
+            purge: "{{ common_pkgs.apt.remove_modified_configs }}"

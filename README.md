@@ -13,11 +13,21 @@ None.
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
 ```yaml
-common_pkgs_pacman: []
-common_pkgs_apt: []
+common_pkgs:
+  apt:
+    install: []
+    remove: []
+    remove_modified_configs: false
+  pacman:
+    install: []
+    remove: []
+    remove_modified_configs: false
 ```
 
-- This is a list of common packages that should be installed with the package manager of the target system.
+- `common_pkgs.<pkg_mgr>.install`: List of packages to install using the defined package manager.
+- `common_pkgs.<pkg_mgr>.remove`: List of packages to remove using the defined package manager.
+- `common_pkgs.<pkg_mgr>.remove_modified_configs`: If set to `true`, modified configuration files will be removed when the package is removed.
+  - **NOTE**: This is useful for ensuring that the system is in a clean state after removing packages.
 
 ## Dependencies
 

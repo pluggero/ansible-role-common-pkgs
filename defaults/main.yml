@@ -1,3 +1,10 @@
 ---
-common_pkgs_pacman: []
-common_pkgs_apt: []
+common_pkgs:
+  apt:
+    install: []
+    remove: []
+    remove_modified_configs: false
+  pacman:
+    install: []
+    remove: []
+    remove_modified_configs: false

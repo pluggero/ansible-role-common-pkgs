@@ -4,7 +4,7 @@
     msg: "This role only supports {{ ansible_os_family }} systems that use pacman as a package manager."
   when: ansible_pkg_mgr != "pacman"
 
-- name: Install neovim via pacman
+- name: Install common packages via pacman
   block:
     - name: Update pacman cache
       community.general.pacman:
@@ -13,6 +13,6 @@
 
     - name: Ensure common pacman packages are installed
       community.general.pacman:
-        name: "{{ common_pkgs_pacman }}"
+        name: "{{ common_pkgs.pacman.install }}"
         state: present
       become: true

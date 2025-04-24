@@ -1,5 +1,16 @@
 ---
-common_pkgs_pacman:
-  - bc
-common_pkgs_apt:
-  - bc
+common_pkgs:
+  apt:
+    install:
+      - bc
+      - git
+    remove:
+      - wget
+    remove_modified_configs: true
+  pacman:
+    install:
+      - bc
+      - git
+    remove:
+      - ansible
+    remove_modified_configs: true
