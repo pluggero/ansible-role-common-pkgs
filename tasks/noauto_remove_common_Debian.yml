@@ -18,8 +18,10 @@
         - name: Remove useless packages from the cache
           ansible.builtin.apt:
             autoclean: true
+          become: true
 
         - name: Remove dependencies that are no longer required
           ansible.builtin.apt:
             autoremove: true
             purge: "{{ common_pkgs.apt.remove_modified_configs }}"
+          become: true
