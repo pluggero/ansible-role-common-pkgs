@@ -26,6 +26,8 @@
           loop_control:
             loop_var: regex
           register: common_pkgs_pacman_remove_regex_result
+          args:
+            executable: /bin/bash
           when: common_pkgs.pacman.remove_regex | length > 0
           changed_when: false
           failed_when: false # Handle if no packages match the regex
