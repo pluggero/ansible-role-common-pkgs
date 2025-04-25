@@ -6,6 +6,13 @@ common_pkgs:
       - git
     remove:
       - wget
+    remove_regex:
+      - "-dev"
+      - "z-utils"
+    remove_regex_test:
+      - "dpkg-dev"
+      - "libssl-dev"
+      - "xz-utils"
     remove_modified_configs: true
   pacman:
     install:
@@ -13,4 +20,8 @@ common_pkgs:
       - git
     remove:
       - ansible
+    remove_regex:
+      - "-pip"
+    remove_regex_test:
+      - "python-pip"
     remove_modified_configs: true
