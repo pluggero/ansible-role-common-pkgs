@@ -20,6 +20,7 @@
       block:
         - name: Get list of installed pacman packages matching each regex
           ansible.builtin.shell: |
+            set -o pipefail
             pacman -Qq | grep -E -- '{{ regex }}'
           loop: "{{ common_pkgs.pacman.remove_regex }}"
           loop_control:

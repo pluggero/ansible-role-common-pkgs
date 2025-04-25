@@ -20,6 +20,7 @@
       block:
         - name: Get list of installed apt packages matching each regex
           ansible.builtin.shell: |
+            set -o pipefail
             dpkg-query -W -f='${Package}\n' | grep -E -- '{{ regex }}'
           loop: "{{ common_pkgs.apt.remove_regex }}"
           loop_control:
