@@ -3,13 +3,43 @@
   ansible.builtin.fail:
     msg: "This role only supports {{ ansible_os_family }} systems that use pacman as a package manager."
   when: ansible_pkg_mgr != "pacman"
-
 - name: Remove common packages via pacman
   block:
     - name: Ensure common pacman packages and dependencies are removed
       community.general.pacman:
-        name: "{{ common_pkgs.pacman.remove }}"
+        name: "{{ package }}"
         remove_nosave: "{{ common_pkgs.pacman.remove_modified_configs }}"
         state: absent
         extra_args: --recursive
+      loop: "{{ common_pkgs.pacman.remove }}"
+      loop_control:
+        loop_var: package
       become: true
+
+    - name: Remove common pacman packages matching regex
+      block:
+        - name: Get list of installed pacman packages matching each regex
+          ansible.builtin.shell: |
+            set -o pipefail
+            pacman -Qq | grep -E -- '{{ regex }}'
+          loop: "{{ common_pkgs.pacman.remove_regex }}"
+          loop_control:
+            loop_var: regex
+          register: common_pkgs_pacman_remove_regex_result
+          args:
+            executable: /bin/bash
+          when: common_pkgs.pacman.remove_regex | length > 0
+          changed_when: false
+          failed_when: false # Handle if no packages match the regex
+
+        - name: Ensure common pacman packages matching regex are removed
+          community.general.pacman:
+            name: "{{ package }}"
+            state: absent
+          loop: "{{ common_pkgs_pacman_remove_regex_result.results | map(attribute='stdout_lines') | flatten | unique }}"
+          loop_control:
+            loop_var: package
+          when:
+            - common_pkgs_pacman_remove_regex_result is defined
+            - common_pkgs_pacman_remove_regex_result.results | length > 0
+          become: true

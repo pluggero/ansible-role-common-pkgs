@@ -14,6 +14,9 @@
 
     - name: Ensure common apt packages are installed
       ansible.builtin.apt:
-        name: "{{ common_pkgs.apt.install }}"
+        name: "{{ package }}"
         state: present
+      loop: "{{ common_pkgs.apt.install }}"
+      loop_control:
+        loop_var: package
       become: true

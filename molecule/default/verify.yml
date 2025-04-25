@@ -30,3 +30,13 @@
       loop: "{{ common_pkgs[ansible_facts['pkg_mgr']].remove }}"
       loop_control:
         loop_var: package
+
+    - name: Assert that test regex packages are removed
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.packages is defined
+          - package not in ansible_facts.packages
+        fail_msg: "Regex Package {{ package }} is STILL installed"
+      loop: "{{ common_pkgs[ansible_facts['pkg_mgr']].remove_regex_test }}"
+      loop_control:
+        loop_var: package
