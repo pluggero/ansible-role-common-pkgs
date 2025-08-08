@@ -25,3 +25,17 @@ common_pkgs:
     remove_regex_test:
       - "python-pip"
     remove_modified_configs: true
+  apk:
+    install:
+      - bc
+      - git
+    remove:
+      - wget
+    remove_regex:
+      - "-dev"
+      - "zlib-dev"
+    remove_regex_test:
+      - "libc-dev"
+      - "openssl-dev"
+      - "xz-dev"
+    remove_modified_configs: true
