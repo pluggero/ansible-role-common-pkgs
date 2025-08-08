@@ -10,3 +10,8 @@ common_pkgs:
     remove: []
     remove_regex: []
     remove_modified_configs: false
+  apk:
+    install: []
+    remove: []
+    remove_regex: []
+    remove_modified_configs: false
