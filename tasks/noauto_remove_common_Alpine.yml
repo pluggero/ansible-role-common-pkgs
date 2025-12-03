@@ -10,7 +10,7 @@
       community.general.apk:
         name: "{{ package }}"
         state: absent
-      loop: "{{ common_pkgs.apk.remove }}"
+      loop: "{{ common_pkgs_apk.remove }}"
       loop_control:
         loop_var: package
       become: true
@@ -21,13 +21,13 @@
           ansible.builtin.shell: |
             set -o pipefail
             apk list --installed | awk -F' ' '{print $1}' | grep -E -- '{{ regex }}'
-          loop: "{{ common_pkgs.apk.remove_regex }}"
+          loop: "{{ common_pkgs_apk.remove_regex }}"
           loop_control:
             loop_var: regex
           register: common_pkgs_apk_remove_regex_result
           args:
             executable: /bin/sh
-          when: common_pkgs.apk.remove_regex | length > 0
+          when: common_pkgs_apk.remove_regex | length > 0
           changed_when: false
           failed_when: false
 

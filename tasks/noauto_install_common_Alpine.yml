@@ -6,12 +6,22 @@
 
 - name: Install common packages via apk
   block:
-    - name: Ensure common apk packages are installed
+    - name: Install package dependencies first (if specified)
       community.general.apk:
-        name: "{{ package }}"
+        name: "{{ dependency }}"
         state: present
         no_cache: true
-      loop: "{{ common_pkgs.apk.install }}"
+      loop: "{{ common_pkgs_apk.install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
+      loop_control:
+        loop_var: dependency
+      become: true
+
+    - name: Ensure common apk packages are installed
+      community.general.apk:
+        name: "{{ package.name if package is mapping else package }}"
+        state: present
+        no_cache: true
+      loop: "{{ common_pkgs_apk.install }}"
       loop_control:
         loop_var: package
       become: true
