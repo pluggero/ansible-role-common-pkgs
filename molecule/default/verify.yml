@@ -7,6 +7,10 @@
     - ../../vars/molecule.yml
 
   tasks:
+    - name: Set package manager variable name
+      ansible.builtin.set_fact:
+        pkg_var_name: "common_pkgs_{{ ansible_facts['pkg_mgr'] }}"
+
     - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
@@ -15,11 +19,21 @@
       ansible.builtin.assert:
         that:
           - ansible_facts.packages is defined
-          - package in ansible_facts.packages
-        fail_msg: "Package {{ package }} is NOT installed"
-      loop: "{{ common_pkgs[ansible_facts['pkg_mgr']].install }}"
+          - "(package.name if package is mapping else package) in ansible_facts.packages"
+        fail_msg: "Package {{ package.name if package is mapping else package }} is NOT installed"
+      loop: "{{ vars[pkg_var_name].install }}"
       loop_control:
         loop_var: package
+
+    - name: Assert that dependencies are installed
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.packages is defined
+          - dependency in ansible_facts.packages
+        fail_msg: "Dependency {{ dependency }} is NOT installed"
+      loop: "{{ vars[pkg_var_name].install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
+      loop_control:
+        loop_var: dependency
 
     - name: Assert that test packages are removed
       ansible.builtin.assert:
@@ -27,7 +41,7 @@
           - ansible_facts.packages is defined
           - package not in ansible_facts.packages
         fail_msg: "Package {{ package }} is STILL installed"
-      loop: "{{ common_pkgs[ansible_facts['pkg_mgr']].remove }}"
+      loop: "{{ vars[pkg_var_name].remove }}"
       loop_control:
         loop_var: package
 
@@ -37,6 +51,6 @@
           - ansible_facts.packages is defined
           - package not in ansible_facts.packages
         fail_msg: "Regex Package {{ package }} is STILL installed"
-      loop: "{{ common_pkgs[ansible_facts['pkg_mgr']].remove_regex_test }}"
+      loop: "{{ vars[pkg_var_name].remove_regex_test }}"
       loop_control:
         loop_var: package

@@ -9,9 +9,9 @@
     - name: Ensure common apt packages are removed
       ansible.builtin.apt:
         name: "{{ package }}"
-        purge: "{{ common_pkgs.apt.remove_modified_configs }}"
+        purge: "{{ common_pkgs_apt.remove_modified_configs }}"
         state: absent
-      loop: "{{ common_pkgs.apt.remove }}"
+      loop: "{{ common_pkgs_apt.remove }}"
       loop_control:
         loop_var: package
       become: true
@@ -22,20 +22,20 @@
           ansible.builtin.shell: |
             set -o pipefail
             dpkg-query -W -f='${Package}\n' | grep -E -- '{{ regex }}'
-          loop: "{{ common_pkgs.apt.remove_regex }}"
+          loop: "{{ common_pkgs_apt.remove_regex }}"
           loop_control:
             loop_var: regex
           register: common_pkgs_apt_remove_regex_result
           args:
             executable: /bin/bash
-          when: common_pkgs.apt.remove_regex | length > 0
+          when: common_pkgs_apt.remove_regex | length > 0
           changed_when: false
           failed_when: false # Handle if no packages match the regex
 
         - name: Ensure common apt packages matching regex are removed
           ansible.builtin.apt:
             name: "{{ package }}"
-            purge: "{{ common_pkgs.apt.remove_modified_configs }}"
+            purge: "{{ common_pkgs_apt.remove_modified_configs }}"
             state: absent
           loop: "{{ common_pkgs_apt_remove_regex_result.results | map(attribute='stdout_lines') | flatten | unique }}"
           loop_control:
@@ -55,5 +55,5 @@
         - name: Remove dependencies that are no longer required
           ansible.builtin.apt:
             autoremove: true
-            purge: "{{ common_pkgs.apt.remove_modified_configs }}"
+            purge: "{{ common_pkgs_apt.remove_modified_configs }}"
           become: true

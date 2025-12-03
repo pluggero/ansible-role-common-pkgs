@@ -12,11 +12,20 @@
         cache_valid_time: 3600
       become: true
 
+    - name: Install package dependencies first (if specified)
+      ansible.builtin.apt:
+        name: "{{ dependency }}"
+        state: present
+      loop: "{{ common_pkgs_apt.install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
+      loop_control:
+        loop_var: dependency
+      become: true
+
     - name: Ensure common apt packages are installed
       ansible.builtin.apt:
-        name: "{{ package }}"
+        name: "{{ package.name if package is mapping else package }}"
         state: present
-      loop: "{{ common_pkgs.apt.install }}"
+      loop: "{{ common_pkgs_apt.install }}"
       loop_control:
         loop_var: package
       become: true
