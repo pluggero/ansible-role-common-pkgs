@@ -20,7 +20,7 @@
         - name: Get list of installed apk packages matching each regex
           ansible.builtin.shell: |
             set -o pipefail
-            apk list --installed | awk -F' ' '{print $1}' | grep -E -- '{{ regex }}'
+            apk list --installed | awk -F' ' '{print $1}' | sed 's/-[0-9].*//' | grep -E -- '{{ regex }}'
           loop: "{{ common_pkgs_apk.remove_regex }}"
           loop_control:
             loop_var: regex
