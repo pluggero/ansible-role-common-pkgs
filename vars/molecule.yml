@@ -45,8 +45,7 @@ common_pkgs_apk:
   remove:
     - wget
   remove_regex:
-    - "-dev"
-    - "zlib-dev"
+    - "^(libc|openssl|xz|zlib)-dev$"
   remove_regex_test:
     - "libc-dev"
     - "openssl-dev"
