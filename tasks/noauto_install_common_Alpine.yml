@@ -6,11 +6,16 @@
 
 - name: Install common packages via apk
   block:
+    - name: Update apk cache
+      community.general.apk:
+        update_cache: true
+      changed_when: false # Cache update is a preparatory operation, not a state change
+      become: true
+
     - name: Install package dependencies first (if specified)
       community.general.apk:
         name: "{{ dependency }}"
         state: present
-        no_cache: true
       loop: "{{ common_pkgs_apk.install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
       loop_control:
         loop_var: dependency
@@ -20,7 +25,6 @@
       community.general.apk:
         name: "{{ package.name if package is mapping else package }}"
         state: present
-        no_cache: true
       loop: "{{ common_pkgs_apk.install }}"
       loop_control:
         loop_var: package
