@@ -30,6 +30,12 @@ common_pkgs_apk:
   remove: []
   remove_regex: []
   remove_modified_configs: false
+
+common_pkgs_pkgng:
+  install: []
+  remove: []
+  remove_regex: []
+  remove_modified_configs: false
 ```
 
 - `common_pkgs_<pkg_mgr>.install`: List of packages to install using the defined package manager. Supports two formats:

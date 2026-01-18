@@ -1,0 +1,51 @@
+---
+- name: Ensure we are using pkgng
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use pkgng as a package manager."
+  when: ansible_pkg_mgr != "pkgng"
+
+- name: Remove common packages via pkgng
+  block:
+    - name: Ensure common pkgng packages are removed
+      community.general.pkgng:
+        name: "{{ package }}"
+        state: absent
+      loop: "{{ common_pkgs_pkgng.remove }}"
+      loop_control:
+        loop_var: package
+      become: true
+
+    - name: Remove common pkgng packages matching regex
+      block:
+        - name: Get list of installed pkgng packages matching each regex
+          ansible.builtin.shell: |
+            set -o pipefail
+            pkg query '%n' | grep -E -- '{{ regex }}'
+          loop: "{{ common_pkgs_pkgng.remove_regex }}"
+          loop_control:
+            loop_var: regex
+          register: common_pkgs_pkgng_remove_regex_result
+          args:
+            executable: /bin/sh
+          when: common_pkgs_pkgng.remove_regex | length > 0
+          changed_when: false
+          failed_when: false # Handle if no packages match the regex
+
+        - name: Ensure common pkgng packages matching regex are removed
+          community.general.pkgng:
+            name: "{{ package }}"
+            state: absent
+          loop: "{{ common_pkgs_pkgng_remove_regex_result.results | map(attribute='stdout_lines') | flatten | unique }}"
+          loop_control:
+            loop_var: package
+          when:
+            - common_pkgs_pkgng_remove_regex_result is defined
+            - common_pkgs_pkgng_remove_regex_result.results | length > 0
+          become: true
+
+    - name: Perform cleanup
+      block:
+        - name: Remove dependencies that are no longer required
+          ansible.builtin.command: pkg autoremove -y
+          become: true
+          changed_when: false

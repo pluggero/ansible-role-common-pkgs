@@ -51,3 +51,19 @@ common_pkgs_apk:
     - "openssl-dev"
     - "xz-dev"
   remove_modified_configs: true
+
+common_pkgs_pkgng:
+  install:
+    - bc
+    - git
+    # Test object format with dependency control
+    - name: curl
+      depends:
+        - ca_root_nss
+  remove:
+    - wget
+  remove_regex:
+    - "-dev"
+  remove_regex_test:
+    - "libidn2-dev"
+  remove_modified_configs: true
