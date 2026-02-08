@@ -54,7 +54,7 @@ common_pkgs_apk:
 
 common_pkgs_pkgng:
   install:
-    - bc
+    - tree
     - git
     # Test object format with dependency control
     - name: curl
