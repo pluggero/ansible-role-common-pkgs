@@ -1,0 +1,30 @@
+---
+- name: Ensure we are using pkgng
+  ansible.builtin.fail:
+    msg: "This role only supports {{ ansible_os_family }} systems that use pkgng as a package manager."
+  when: ansible_pkg_mgr != "pkgng"
+
+- name: Install common packages via pkgng
+  block:
+    - name: Update pkg repository catalog
+      ansible.builtin.command: pkg update
+      changed_when: false # The pkg module does not support update_cache and cache_valid_time.
+      become: true
+
+    - name: Install package dependencies first (if specified)
+      community.general.pkgng:
+        name: "{{ dependency }}"
+        state: present
+      loop: "{{ common_pkgs_pkgng.install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
+      loop_control:
+        loop_var: dependency
+      become: true
+
+    - name: Ensure common pkgng packages are installed
+      community.general.pkgng:
+        name: "{{ package.name if package is mapping else package }}"
+        state: present
+      loop: "{{ common_pkgs_pkgng.install }}"
+      loop_control:
+        loop_var: package
+      become: true
