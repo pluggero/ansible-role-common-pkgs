@@ -4,10 +4,10 @@
     - name: Include OS-specific common packages removal
       ansible.builtin.include_tasks: "{{ task_file }}"
       with_first_found:
-        - "noauto_remove_common_{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-        - "noauto_remove_common_{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "noauto_remove_common_{{ ansible_distribution }}.yml"
-        - "noauto_remove_common_{{ ansible_os_family }}.yml"
-        - "noauto_remove_common_{{ ansible_lsb.id }}.yml"
+        - "{{ role_path }}/tasks/noauto_remove_common_{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ role_path }}/tasks/noauto_remove_common_{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ role_path }}/tasks/noauto_remove_common_{{ ansible_distribution }}.yml"
+        - "{{ role_path }}/tasks/noauto_remove_common_{{ ansible_os_family }}.yml"
+        - "{{ role_path }}/tasks/noauto_remove_common_{{ ansible_lsb.id }}.yml"
       loop_control:
         loop_var: task_file
