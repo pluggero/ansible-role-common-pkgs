@@ -6,6 +6,11 @@
   vars_files:
     - ../../vars/molecule.yml
 
+  vars:
+    ansible_user: ansible
+    ansible_password: ansible
+    ansible_become_password: ansible
+
   tasks:
     - name: Set package manager variable name
       ansible.builtin.set_fact:
