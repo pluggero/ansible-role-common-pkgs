@@ -1,0 +1,10 @@
+---
+- name: Remove common packages via chocolatey
+  block:
+    - name: Ensure common chocolatey packages are removed
+      chocolatey.chocolatey.win_chocolatey:
+        name: "{{ package }}"
+        state: absent
+      loop: "{{ common_pkgs_chocolatey.remove }}"
+      loop_control:
+        loop_var: package
