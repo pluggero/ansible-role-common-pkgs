@@ -2,11 +2,15 @@
 
 [![CI](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml/badge.svg)](https://github.com/pluggero/ansible-role-common-pkgs/actions/workflows/ci.yml) [![Ansible Galaxy downloads](https://img.shields.io/ansible/role/d/pluggero/common_pkgs?label=Ansible%20Galaxy%20downloads&logo=ansible&color=%23096598)](https://galaxy.ansible.com/ui/standalone/roles/pluggero/common_pkgs)
 
-An Ansible Role that installs common packages.
+An Ansible Role that installs common packages across Linux, FreeBSD, and Windows systems.
 
 ## Requirements
 
+### Linux and FreeBSD Systems
 None.
+
+### Windows Systems
+- **Ansible Collections**: The `chocolatey.chocolatey` collection (installed via `requirements.yml`)
 
 ## Role Variables
 
@@ -36,6 +40,10 @@ common_pkgs_pkgng:
   remove: []
   remove_regex: []
   remove_modified_configs: false
+
+common_pkgs_chocolatey:
+  install: []
+  remove: []
 ```
 
 - `common_pkgs_<pkg_mgr>.install`: List of packages to install using the defined package manager. Supports two formats:
@@ -103,6 +111,25 @@ common_pkgs_apt:
         - lxpolkit
     - vim                           # Simple format
 ```
+
+### Windows Example
+
+```yaml
+- hosts: windows_servers
+  roles:
+    - role: pluggero.common_pkgs
+      vars:
+        common_pkgs_chocolatey:
+          install:
+            - git
+            - googlechrome
+            - 7zip
+            - vscode
+          remove:
+            - adobereader
+```
+
+**Note**: Windows support currently includes basic install and remove operations only. Regex removal, dependency control, and config purging are not supported on Windows.
 
 ## License
 
