@@ -6,56 +6,79 @@
   vars_files:
     - ../../vars/molecule.yml
 
-  vars:
-    ansible_user: ansible
-    ansible_password: ansible
-    ansible_become_password: ansible
-
   tasks:
-    - name: Set package manager variable name
-      ansible.builtin.set_fact:
-        pkg_var_name: "common_pkgs_{{ ansible_facts['pkg_mgr'] }}"
+    - name: Unix verification
+      when: ansible_os_family != 'Windows'
+      block:
+        - name: Set package manager variable name
+          ansible.builtin.set_fact:
+            pkg_var_name: "common_pkgs_{{ ansible_facts['pkg_mgr'] }}"
 
-    - name: Gather package facts
-      ansible.builtin.package_facts:
-        manager: auto
+        - name: Gather package facts
+          ansible.builtin.package_facts:
+            manager: auto
 
-    - name: Assert that test packages are installed
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.packages is defined
-          - "(package.name if package is mapping else package) in ansible_facts.packages"
-        fail_msg: "Package {{ package.name if package is mapping else package }} is NOT installed"
-      loop: "{{ vars[pkg_var_name].install }}"
-      loop_control:
-        loop_var: package
+        - name: Assert that test packages are installed
+          ansible.builtin.assert:
+            that:
+              - ansible_facts.packages is defined
+              - "(package.name if package is mapping else package) in ansible_facts.packages"
+            fail_msg: "Package {{ package.name if package is mapping else package }} is NOT installed"
+          loop: "{{ vars[pkg_var_name].install }}"
+          loop_control:
+            loop_var: package
 
-    - name: Assert that dependencies are installed
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.packages is defined
-          - dependency in ansible_facts.packages
-        fail_msg: "Dependency {{ dependency }} is NOT installed"
-      loop: "{{ vars[pkg_var_name].install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
-      loop_control:
-        loop_var: dependency
+        - name: Assert that dependencies are installed
+          ansible.builtin.assert:
+            that:
+              - ansible_facts.packages is defined
+              - dependency in ansible_facts.packages
+            fail_msg: "Dependency {{ dependency }} is NOT installed"
+          loop: "{{ vars[pkg_var_name].install | selectattr('depends', 'defined') | map(attribute='depends') | flatten }}"
+          loop_control:
+            loop_var: dependency
 
-    - name: Assert that test packages are removed
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.packages is defined
-          - package not in ansible_facts.packages
-        fail_msg: "Package {{ package }} is STILL installed"
-      loop: "{{ vars[pkg_var_name].remove }}"
-      loop_control:
-        loop_var: package
+        - name: Assert that test packages are removed
+          ansible.builtin.assert:
+            that:
+              - ansible_facts.packages is defined
+              - package not in ansible_facts.packages
+            fail_msg: "Package {{ package }} is STILL installed"
+          loop: "{{ vars[pkg_var_name].remove }}"
+          loop_control:
+            loop_var: package
 
-    - name: Assert that test regex packages are removed
-      ansible.builtin.assert:
-        that:
-          - ansible_facts.packages is defined
-          - package not in ansible_facts.packages
-        fail_msg: "Regex Package {{ package }} is STILL installed"
-      loop: "{{ vars[pkg_var_name].remove_regex_test }}"
-      loop_control:
-        loop_var: package
+        - name: Assert that test regex packages are removed
+          ansible.builtin.assert:
+            that:
+              - ansible_facts.packages is defined
+              - package not in ansible_facts.packages
+            fail_msg: "Regex Package {{ package }} is STILL installed"
+          loop: "{{ vars[pkg_var_name].remove_regex_test }}"
+          loop_control:
+            loop_var: package
+
+    - name: Windows verification
+      when: ansible_os_family == 'Windows'
+      block:
+        - name: Gather Chocolatey package facts
+          chocolatey.chocolatey.win_chocolatey_facts:
+          become: true
+          become_method: ansible.builtin.runas
+          become_user: SYSTEM
+
+        - name: Assert that test packages are installed
+          ansible.builtin.assert:
+            that: "(package.name if package is mapping else package) in ansible_chocolatey.packages | map(attribute='package') | list"
+            fail_msg: "Package {{ package.name if package is mapping else package }} is NOT installed"
+          loop: "{{ common_pkgs_chocolatey.install }}"
+          loop_control:
+            loop_var: package
+
+        - name: Assert that test packages are removed
+          ansible.builtin.assert:
+            that: "package not in ansible_chocolatey.packages | map(attribute='package') | list"
+            fail_msg: "Package {{ package }} is STILL installed"
+          loop: "{{ common_pkgs_chocolatey.remove }}"
+          loop_control:
+            loop_var: package

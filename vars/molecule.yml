@@ -63,7 +63,14 @@ common_pkgs_pkgng:
   remove:
     - wget
   remove_regex:
-    - "-dev"
+    - "^wget"
   remove_regex_test:
-    - "libidn2-dev"
+    - "wget"
   remove_modified_configs: true
+
+common_pkgs_chocolatey:
+  install:
+    - git
+    - 7zip
+  remove:
+    - wget
