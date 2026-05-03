@@ -1,14 +1,10 @@
 ---
 - name: Converge
+  gather_facts: true
   hosts: all
 
   vars_files:
     - ../../vars/molecule.yml
-
-  vars:
-    ansible_user: ansible
-    ansible_password: ansible
-    ansible_become_password: ansible
 
   pre_tasks:
     - name: Update apt cache

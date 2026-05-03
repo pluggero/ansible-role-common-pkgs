@@ -1,0 +1,10 @@
+---
+- name: Install common packages via chocolatey
+  block:
+    - name: Ensure common chocolatey packages are installed
+      chocolatey.chocolatey.win_chocolatey:
+        name: "{{ package.name if package is mapping else package }}"
+        state: present
+      loop: "{{ common_pkgs_chocolatey.install }}"
+      loop_control:
+        loop_var: package

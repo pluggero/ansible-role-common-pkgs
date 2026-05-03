@@ -1,0 +1,47 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: true
+
+  vars_files:
+    - ../../vars/molecule.yml
+
+  pre_tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
+      when: ansible_os_family == 'Debian'
+
+  tasks:
+    - name: Unix preparation
+      when: ansible_os_family != 'Windows'
+      block:
+        - name: Set package manager variable name
+          ansible.builtin.set_fact:
+            pkg_var_name: "common_pkgs_{{ ansible_facts['pkg_mgr'] }}"
+
+        - name: Install packages that will be removed by the role (direct)
+          ansible.builtin.package:
+            name: "{{ lookup('vars', pkg_var_name).remove }}"
+            state: present
+          become: true
+
+        - name: Install packages that will be removed by the role (regex targets)
+          ansible.builtin.package:
+            name: "{{ lookup('vars', pkg_var_name).remove_regex_test }}"
+            state: present
+          become: true
+          when: lookup('vars', pkg_var_name).remove_regex_test is defined
+
+    - name: Windows preparation
+      when: ansible_os_family == 'Windows'
+      block:
+        - name: Install packages that will be removed by the role
+          chocolatey.chocolatey.win_chocolatey:
+            name: "{{ common_pkgs_chocolatey.remove }}"
+            state: present
+          become: true
+          become_method: ansible.builtin.runas
+          become_user: SYSTEM
