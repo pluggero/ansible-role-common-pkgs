@@ -71,6 +71,10 @@ common_pkgs_pkgng:
 common_pkgs_chocolatey:
   install:
     - git
-    - 7zip
+    # Test object format with all choco args
+    - name: 7zip
+      install_args: "/S"
+      package_params: "/NoDesktopShortcut"
+      choco_args: "--no-progress"
   remove:
     - wget

@@ -5,6 +5,9 @@
       chocolatey.chocolatey.win_chocolatey:
         name: "{{ package.name if package is mapping else package }}"
         state: present
+        install_args: "{{ package.install_args | default(omit) }}"
+        package_params: "{{ package.package_params | default(omit) }}"
+        choco_args: "{{ package.choco_args | default(omit) }}"
       loop: "{{ common_pkgs_chocolatey.install }}"
       loop_control:
         loop_var: package
