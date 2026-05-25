@@ -50,7 +50,10 @@ common_pkgs_chocolatey:
   - **Simple format** (string): Package name as a string (e.g., `"git"`)
   - **Object format**: Package as an object with the following fields:
     - `name`: Package name to install (required)
-    - `depends`: List of packages to install first (optional) - useful for controlling which package provides a virtual package/dependency
+    - `depends`: List of packages to install first (optional) - useful for controlling which package provides a virtual package/dependency *(Linux/FreeBSD only)*
+    - `install_args`: Arguments to pass to the native installer, equivalent to `--install-arguments` (optional) *(Chocolatey only)*
+    - `package_params`: Parameters to pass to the Chocolatey package, equivalent to `--params` (optional) *(Chocolatey only)*
+    - `choco_args`: Additional arguments to pass to Chocolatey (optional) *(Chocolatey only)*
 - `common_pkgs_<pkg_mgr>.remove`: List of packages to remove using the defined package manager.
 - `common_pkgs_<pkg_mgr>.remove_regex`: List of regular expression patterns to match packages for removal.
 - `common_pkgs_<pkg_mgr>.remove_modified_configs`: If set to `true`, modified configuration files will be removed when the package is removed.
@@ -123,13 +126,16 @@ common_pkgs_apt:
           install:
             - git
             - googlechrome
-            - 7zip
-            - vscode
+            - name: 7zip
+              package_params: "/NoDesktopShortcut"
+            - name: vscode
+              install_args: "/SILENT"
+              choco_args: "--no-progress"
           remove:
             - adobereader
 ```
 
-**Note**: Windows support currently includes basic install and remove operations only. Regex removal, dependency control, and config purging are not supported on Windows.
+**Note**: Windows support includes install and remove operations. Regex removal, dependency control, and config purging are not supported on Windows.
 
 ## License
 
