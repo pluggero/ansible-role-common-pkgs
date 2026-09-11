@@ -5,6 +5,8 @@
   when: ansible_pkg_mgr != "pkgng"
 
 - name: Remove common packages via pkgng
+  environment:
+    IGNORE_OSVERSION: "yes"
   block:
     - name: Ensure common pkgng packages are removed
       community.general.pkgng:
