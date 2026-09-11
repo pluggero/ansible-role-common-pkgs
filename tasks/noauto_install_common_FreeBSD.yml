@@ -5,6 +5,8 @@
   when: ansible_pkg_mgr != "pkgng"
 
 - name: Install common packages via pkgng
+  environment:
+    IGNORE_OSVERSION: "yes"
   block:
     - name: Update pkg repository catalog
       ansible.builtin.command: pkg update

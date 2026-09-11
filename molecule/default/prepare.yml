@@ -15,25 +15,73 @@
       when: ansible_os_family == 'Debian'
 
   tasks:
-    - name: Unix preparation
-      when: ansible_os_family != 'Windows'
+    - name: Debian preparation
+      when: ansible_os_family == 'Debian'
       block:
-        - name: Set package manager variable name
-          ansible.builtin.set_fact:
-            pkg_var_name: "common_pkgs_{{ ansible_facts['pkg_mgr'] }}"
-
         - name: Install packages that will be removed by the role (direct)
           ansible.builtin.package:
-            name: "{{ lookup('vars', pkg_var_name).remove }}"
+            name: "{{ common_pkgs_apt.remove }}"
             state: present
           become: true
 
         - name: Install packages that will be removed by the role (regex targets)
           ansible.builtin.package:
-            name: "{{ lookup('vars', pkg_var_name).remove_regex_test }}"
+            name: "{{ common_pkgs_apt.remove_regex_test }}"
             state: present
           become: true
-          when: lookup('vars', pkg_var_name).remove_regex_test is defined
+          when: common_pkgs_apt.remove_regex_test is defined
+
+    - name: Archlinux preparation
+      when: ansible_os_family == 'Archlinux'
+      block:
+        - name: Install packages that will be removed by the role (direct)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_pacman.remove }}"
+            state: present
+          become: true
+
+        - name: Install packages that will be removed by the role (regex targets)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_pacman.remove_regex_test }}"
+            state: present
+          become: true
+          when: common_pkgs_pacman.remove_regex_test is defined
+
+    - name: Alpine preparation
+      when: ansible_os_family == 'Alpine'
+      block:
+        - name: Install packages that will be removed by the role (direct)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_apk.remove }}"
+            state: present
+          become: true
+
+        - name: Install packages that will be removed by the role (regex targets)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_apk.remove_regex_test }}"
+            state: present
+          become: true
+          when: common_pkgs_apk.remove_regex_test is defined
+
+    - name: FreeBSD preparation
+      when: ansible_os_family == 'FreeBSD'
+      block:
+        - name: Install packages that will be removed by the role (direct)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_pkgng.remove }}"
+            state: present
+          become: true
+          environment:
+            IGNORE_OSVERSION: "yes"
+
+        - name: Install packages that will be removed by the role (regex targets)
+          ansible.builtin.package:
+            name: "{{ common_pkgs_pkgng.remove_regex_test }}"
+            state: present
+          become: true
+          environment:
+            IGNORE_OSVERSION: "yes"
+          when: common_pkgs_pkgng.remove_regex_test is defined
 
     - name: Windows preparation
       when: ansible_os_family == 'Windows'
