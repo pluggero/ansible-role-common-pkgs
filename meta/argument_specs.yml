@@ -1,0 +1,161 @@
+---
+argument_specs:
+  main:
+    short_description: Installs and removes common packages across Linux distributions, FreeBSD, and Windows.
+    description: >-
+      Installs and removes packages using each platform's native package manager
+      (apt, pacman, apk, pkgng, or Chocolatey on Windows), with optional dependency
+      ordering, regex-based removal, and modified-config cleanup on removal.
+    options:
+      common_pkgs_apt:
+        type: dict
+        required: false
+        description: Package install/remove configuration for apt (Debian/Ubuntu).
+        options:
+          install:
+            type: raw
+            required: false
+            default: []
+            description: >-
+              List of packages to install. Each element is either a package name (string)
+              or an object with a required `name` and an optional `depends` list of packages
+              to install first (useful for controlling which package provides a virtual
+              dependency).
+          remove:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of package names to remove.
+          remove_regex:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of regular expression patterns to match installed packages for removal.
+          remove_modified_configs:
+            type: bool
+            required: false
+            default: false
+            description: >-
+              If true, modified configuration files are purged when a matching package
+              is removed, leaving the system in a clean state.
+      common_pkgs_pacman:
+        type: dict
+        required: false
+        description: Package install/remove configuration for pacman (Arch Linux).
+        options:
+          install:
+            type: raw
+            required: false
+            default: []
+            description: >-
+              List of packages to install. Each element is either a package name (string)
+              or an object with a required `name` and an optional `depends` list of packages
+              to install first (useful for controlling which package provides a virtual
+              dependency).
+          remove:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of package names to remove.
+          remove_regex:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of regular expression patterns to match installed packages for removal.
+          remove_modified_configs:
+            type: bool
+            required: false
+            default: false
+            description: >-
+              If true, modified configuration files are purged when a matching package
+              is removed, leaving the system in a clean state.
+      common_pkgs_apk:
+        type: dict
+        required: false
+        description: Package install/remove configuration for apk (Alpine Linux).
+        options:
+          install:
+            type: raw
+            required: false
+            default: []
+            description: >-
+              List of packages to install. Each element is either a package name (string)
+              or an object with a required `name` and an optional `depends` list of packages
+              to install first (useful for controlling which package provides a virtual
+              dependency).
+          remove:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of package names to remove.
+          remove_regex:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of regular expression patterns to match installed packages for removal.
+          remove_modified_configs:
+            type: bool
+            required: false
+            default: false
+            description: >-
+              If true, modified configuration files are purged when a matching package
+              is removed, leaving the system in a clean state.
+      common_pkgs_pkgng:
+        type: dict
+        required: false
+        description: Package install/remove configuration for pkgng (FreeBSD).
+        options:
+          install:
+            type: raw
+            required: false
+            default: []
+            description: >-
+              List of packages to install. Each element is either a package name (string)
+              or an object with a required `name` and an optional `depends` list of packages
+              to install first (useful for controlling which package provides a virtual
+              dependency).
+          remove:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of package names to remove.
+          remove_regex:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of regular expression patterns to match installed packages for removal.
+          remove_modified_configs:
+            type: bool
+            required: false
+            default: false
+            description: >-
+              If true, modified configuration files are purged when a matching package
+              is removed, leaving the system in a clean state.
+      common_pkgs_chocolatey:
+        type: dict
+        required: false
+        description: Package install/remove configuration for Chocolatey (Windows).
+        options:
+          install:
+            type: raw
+            required: false
+            default: []
+            description: >-
+              List of packages to install. Each element is either a package name (string)
+              or an object with a required `name` and optional `install_args`,
+              `package_params`, and `choco_args` passed through to Chocolatey. Regex removal,
+              dependency control, and config purging are not supported on Windows.
+          remove:
+            type: list
+            elements: str
+            required: false
+            default: []
+            description: List of package names to remove.
